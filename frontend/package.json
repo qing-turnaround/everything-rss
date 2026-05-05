@@ -6,7 +6,10 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "tauri": "tauri",
+    "tauri:dev": "tauri dev",
+    "tauri:build": "tauri build"
   },
   "dependencies": {
     "@radix-ui/react-context-menu": "^2.2.16",
@@ -30,6 +33,7 @@
     "@vitejs/plugin-react": "^4.5.2",
     "tailwindcss": "^4",
     "typescript": "^5",
+    "@tauri-apps/cli": "^2",
     "vite": "^6.3.0"
   }
 }

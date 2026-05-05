@@ -1,0 +1,9 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nicedoc/tauri/dev/crates/tauri-utils/schema.json",
+  "identifier": "default",
+  "description": "Default permissions for the app",
+  "windows": ["main"],
+  "permissions": [
+    "core:default"
+  ]
+}
