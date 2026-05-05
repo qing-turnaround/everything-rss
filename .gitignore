@@ -40,3 +40,7 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 data/
+.playwright-mcp/
+backend/rss-server
+frontend/node_modules/
+backend/data/
