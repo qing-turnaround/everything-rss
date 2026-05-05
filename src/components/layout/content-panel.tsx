@@ -7,6 +7,7 @@ import { useKeyboard } from "@/hooks/use-keyboard";
 import { ArticleView } from "@/components/content/article-view";
 import { VideoView } from "@/components/content/video-view";
 import { useState, useEffect, useCallback, useMemo } from "react";
+import { BookOpen } from "lucide-react";
 
 interface ContentPanelProps {
   entries: Entry[];
@@ -82,11 +83,20 @@ export function ContentPanel({ entries }: ContentPanelProps) {
 
   if (!selectedEntry) {
     return (
-      <div className="h-full flex items-center justify-center text-muted text-sm">
+      <div className="h-full flex items-center justify-center text-muted">
         <div className="text-center">
-          <p className="text-2xl mb-2">📖</p>
-          <p>选择一篇文章开始阅读</p>
-          <p className="text-xs mt-2">快捷键: j/k 切换, s 收藏, m 已读, v 原文</p>
+          <BookOpen size={36} strokeWidth={1.2} className="mx-auto mb-3 opacity-30" />
+          <p className="text-sm">选择一篇文章开始阅读</p>
+          <div className="flex items-center justify-center gap-3 mt-4 text-xs">
+            <kbd className="px-1.5 py-0.5 rounded bg-hover-bg border border-border font-mono text-[11px]">J</kbd>
+            <span>/ </span>
+            <kbd className="px-1.5 py-0.5 rounded bg-hover-bg border border-border font-mono text-[11px]">K</kbd>
+            <span className="text-muted/60">切换</span>
+            <kbd className="px-1.5 py-0.5 rounded bg-hover-bg border border-border font-mono text-[11px]">S</kbd>
+            <span className="text-muted/60">收藏</span>
+            <kbd className="px-1.5 py-0.5 rounded bg-hover-bg border border-border font-mono text-[11px]">V</kbd>
+            <span className="text-muted/60">原文</span>
+          </div>
         </div>
       </div>
     );
@@ -94,7 +104,7 @@ export function ContentPanel({ entries }: ContentPanelProps) {
 
   if (activeView === "video") {
     return (
-      <div className="h-full overflow-y-auto">
+      <div className="h-full overflow-y-auto animate-fade-in">
         <VideoView
           entry={selectedEntry}
           feedTitle={feedTitle}
@@ -108,7 +118,7 @@ export function ContentPanel({ entries }: ContentPanelProps) {
   }
 
   return (
-    <div className="h-full overflow-y-auto">
+    <div className="h-full overflow-y-auto animate-fade-in" key={selectedEntryId}>
       <ArticleView
         entry={selectedEntry}
         feedTitle={feedTitle}

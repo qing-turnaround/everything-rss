@@ -1,6 +1,7 @@
 "use client";
 
 import { Entry } from "@/hooks/use-entries";
+import { Play } from "lucide-react";
 
 interface VideoItemProps {
   entry: Entry;
@@ -13,20 +14,27 @@ export function VideoItem({ entry, selected, feedTitle, onClick }: VideoItemProp
   return (
     <button
       onClick={onClick}
-      className={`text-left transition-colors rounded-lg overflow-hidden ${
+      className={`text-left transition-all duration-150 rounded-lg overflow-hidden ${
         selected ? "ring-2 ring-accent" : "hover:ring-1 hover:ring-border"
       }`}
     >
-      <div className="aspect-video bg-border relative">
+      <div className="aspect-video bg-border/50 relative group">
         {entry.thumbnail ? (
-          <img src={entry.thumbnail} alt="" className="w-full h-full object-cover" />
+          <img src={entry.thumbnail} alt="" loading="lazy" className="w-full h-full object-cover" />
         ) : (
-          <div className="w-full h-full flex items-center justify-center text-muted text-2xl">
-            🎬
+          <div className="w-full h-full flex items-center justify-center text-muted">
+            <Play size={28} strokeWidth={1.5} />
           </div>
         )}
         {!entry.isRead && (
-          <span className="absolute top-2 right-2 w-2.5 h-2.5 rounded-full bg-accent" />
+          <span className="absolute top-2 right-2 w-2 h-2 rounded-full bg-accent" aria-label="未读" />
+        )}
+        {entry.thumbnail && (
+          <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-150 bg-black/20">
+            <div className="w-10 h-10 rounded-full bg-black/60 flex items-center justify-center">
+              <Play size={18} className="text-white ml-0.5" fill="white" />
+            </div>
+          </div>
         )}
       </div>
       <div className="p-2">

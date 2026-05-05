@@ -4,6 +4,7 @@ import { Entry } from "@/hooks/use-entries";
 import { format } from "date-fns";
 import { zhCN } from "date-fns/locale";
 import sanitizeHtml from "sanitize-html";
+import { Star, Bookmark, ExternalLink } from "lucide-react";
 
 interface ArticleViewProps {
   entry: Entry;
@@ -36,15 +37,15 @@ export function ArticleView({ entry, feedTitle, onStar, onReadLater, isStarred, 
     : "";
 
   return (
-    <div className="max-w-3xl mx-auto px-6 py-6">
+    <div className="max-w-3xl mx-auto px-6 py-8">
       <h1 className="text-xl font-bold leading-tight mb-3">{entry.title}</h1>
 
-      <div className="flex items-center gap-3 text-sm text-muted mb-6">
+      <div className="flex items-center gap-2 text-sm text-muted mb-8">
         {feedTitle && <span>{feedTitle}</span>}
-        {entry.author && feedTitle && <span>·</span>}
+        {entry.author && feedTitle && <span aria-hidden="true">·</span>}
         {entry.author && <span>{entry.author}</span>}
-        {publishDate && <span>·</span>}
-        {publishDate && <span>{publishDate}</span>}
+        {publishDate && <span aria-hidden="true">·</span>}
+        {publishDate && <time>{publishDate}</time>}
       </div>
 
       <article
@@ -52,34 +53,59 @@ export function ArticleView({ entry, feedTitle, onStar, onReadLater, isStarred, 
         dangerouslySetInnerHTML={{ __html: cleanHtml }}
       />
 
-      <div className="flex items-center gap-3 mt-8 pt-4 border-t border-border">
-        <button
+      <div className="flex items-center gap-2 mt-10 pt-4 border-t border-border">
+        <ActionButton
           onClick={onStar}
-          className={`px-3 py-1.5 text-sm rounded-md transition-colors ${
-            isStarred ? "bg-yellow-100 text-yellow-700" : "bg-hover-bg text-muted hover:text-foreground"
-          }`}
-        >
-          {isStarred ? "★ 已收藏" : "☆ 收藏"}
-        </button>
-        <button
+          active={isStarred}
+          activeClass="bg-warning-soft text-warning"
+          icon={<Star size={14} fill={isStarred ? "currentColor" : "none"} />}
+          label={isStarred ? "已收藏" : "收藏"}
+        />
+        <ActionButton
           onClick={onReadLater}
-          className={`px-3 py-1.5 text-sm rounded-md transition-colors ${
-            isReadLater ? "bg-blue-100 text-blue-700" : "bg-hover-bg text-muted hover:text-foreground"
-          }`}
-        >
-          {isReadLater ? "✓ 稍后读" : "📥 稍后读"}
-        </button>
+          active={isReadLater}
+          activeClass="bg-accent-soft text-accent"
+          icon={<Bookmark size={14} fill={isReadLater ? "currentColor" : "none"} />}
+          label={isReadLater ? "已标记" : "稍后读"}
+        />
         {entry.url && (
           <a
             href={entry.url}
             target="_blank"
             rel="noopener noreferrer"
-            className="px-3 py-1.5 text-sm rounded-md bg-hover-bg text-muted hover:text-foreground transition-colors"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm rounded-md bg-hover-bg text-muted hover:text-foreground transition-colors"
           >
-            ↗ 原文
+            <ExternalLink size={14} />
+            原文
           </a>
         )}
       </div>
     </div>
+  );
+}
+
+function ActionButton({
+  onClick,
+  active,
+  activeClass,
+  icon,
+  label,
+}: {
+  onClick: () => void;
+  active: boolean;
+  activeClass: string;
+  icon: React.ReactNode;
+  label: string;
+}) {
+  return (
+    <button
+      onClick={onClick}
+      className={`inline-flex items-center gap-1.5 px-3 py-1.5 text-sm rounded-md transition-all duration-150 ${
+        active ? activeClass : "bg-hover-bg text-muted hover:text-foreground"
+      }`}
+    >
+      {icon}
+      {label}
+    </button>
   );
 }

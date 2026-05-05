@@ -19,26 +19,27 @@ export function ArticleItem({ entry, selected, feedTitle, onClick }: ArticleItem
   return (
     <button
       onClick={onClick}
-      className={`w-full px-4 py-3 text-left transition-colors border-b border-border ${
-        selected ? "bg-selected-bg" : "hover:bg-hover-bg"
+      className={`w-full px-4 py-3 text-left transition-colors duration-100 border-b border-border ${
+        selected ? "bg-selected-bg" : "hover:bg-hover-bg active:bg-selected-bg/50"
       }`}
     >
-      <div className="flex items-start gap-2">
+      <div className="flex items-start gap-2.5">
         <span
-          className={`mt-2 w-2 h-2 rounded-full flex-shrink-0 ${
+          className={`mt-1.5 w-2 h-2 rounded-full flex-shrink-0 transition-colors duration-200 ${
             entry.isRead ? "bg-transparent" : "bg-accent"
           }`}
+          aria-hidden="true"
         />
         <div className="flex-1 min-w-0">
           <h3 className={`text-sm leading-snug line-clamp-2 ${entry.isRead ? "text-muted" : "font-medium"}`}>
             {entry.title}
           </h3>
           {entry.summary && (
-            <p className="text-xs text-muted mt-1 line-clamp-2">{entry.summary}</p>
+            <p className="text-xs text-muted/80 mt-1 line-clamp-2 leading-relaxed">{entry.summary}</p>
           )}
-          <div className="flex items-center gap-2 mt-1.5 text-xs text-muted">
-            {feedTitle && <span className="truncate">{feedTitle}</span>}
-            {feedTitle && timeAgo && <span>·</span>}
+          <div className="flex items-center gap-1.5 mt-1.5 text-xs text-muted">
+            {feedTitle && <span className="truncate max-w-[120px]">{feedTitle}</span>}
+            {feedTitle && timeAgo && <span aria-hidden="true">·</span>}
             {timeAgo && <span className="flex-shrink-0">{timeAgo}</span>}
           </div>
         </div>
@@ -46,7 +47,8 @@ export function ArticleItem({ entry, selected, feedTitle, onClick }: ArticleItem
           <img
             src={entry.thumbnail}
             alt=""
-            className="w-16 h-12 object-cover rounded flex-shrink-0"
+            loading="lazy"
+            className="w-16 h-12 object-cover rounded-md flex-shrink-0"
           />
         )}
       </div>

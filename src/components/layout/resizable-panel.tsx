@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useRef } from "react";
+import { useCallback, useRef, useState } from "react";
 
 interface ResizablePanelProps {
   width: number;
@@ -21,11 +21,13 @@ export function ResizablePanel({
 }: ResizablePanelProps) {
   const panelRef = useRef<HTMLDivElement>(null);
   const dragging = useRef(false);
+  const [isDragging, setIsDragging] = useState(false);
 
   const onMouseDown = useCallback(
     (e: React.MouseEvent) => {
       e.preventDefault();
       dragging.current = true;
+      setIsDragging(true);
       const startX = e.clientX;
       const startWidth = width;
 
@@ -38,6 +40,7 @@ export function ResizablePanel({
 
       function onMouseUp() {
         dragging.current = false;
+        setIsDragging(false);
         document.removeEventListener("mousemove", onMouseMove);
         document.removeEventListener("mouseup", onMouseUp);
       }
@@ -52,8 +55,14 @@ export function ResizablePanel({
     <div ref={panelRef} className={`relative flex-shrink-0 ${className}`} style={{ width }}>
       {children}
       <div
-        className="absolute top-0 right-0 w-1 h-full cursor-col-resize hover:bg-accent/30 transition-colors z-10"
+        className={`absolute top-0 right-0 w-1 h-full cursor-col-resize transition-colors duration-150 z-10 ${
+          isDragging ? "bg-accent" : "bg-transparent hover:bg-accent/40"
+        }`}
         onMouseDown={onMouseDown}
+        role="separator"
+        aria-orientation="vertical"
+        aria-label="调整面板宽度"
+        tabIndex={0}
       />
     </div>
   );
