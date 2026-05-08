@@ -1,6 +1,7 @@
 package fetcher
 
 import (
+	"net/http"
 	"time"
 
 	"github.com/google/uuid"
@@ -10,7 +11,8 @@ import (
 
 func ParseFeed(url string) ([]model.Entry, error) {
 	fp := gofeed.NewParser()
-	fp.UserAgent = "Everything-RSS/1.0"
+	fp.UserAgent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
+	fp.Client = &http.Client{Timeout: 30 * time.Second}
 	feed, err := fp.ParseURL(url)
 	if err != nil {
 		return nil, err
