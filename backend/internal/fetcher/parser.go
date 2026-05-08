@@ -1,6 +1,7 @@
 package fetcher
 
 import (
+	"fmt"
 	"net/http"
 	"time"
 
@@ -9,11 +10,30 @@ import (
 	"github.com/qing-turnaround/everything-rss/backend/internal/model"
 )
 
-func ParseFeed(url string) ([]model.Entry, error) {
+const browserUA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
+
+func ParseFeed(feedURL string) ([]model.Entry, error) {
+	client := &http.Client{Timeout: 30 * time.Second}
+	req, err := http.NewRequest("GET", feedURL, nil)
+	if err != nil {
+		return nil, err
+	}
+	req.Header.Set("User-Agent", browserUA)
+	req.Header.Set("Cache-Control", "no-cache")
+	req.Header.Set("Pragma", "no-cache")
+
+	resp, err := client.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("http error: %s", resp.Status)
+	}
+
 	fp := gofeed.NewParser()
-	fp.UserAgent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
-	fp.Client = &http.Client{Timeout: 30 * time.Second}
-	feed, err := fp.ParseURL(url)
+	feed, err := fp.Parse(resp.Body)
 	if err != nil {
 		return nil, err
 	}
