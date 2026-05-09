@@ -1,6 +1,7 @@
 import { Entry } from "@/hooks/use-entries";
 import { formatDistanceToNow } from "date-fns";
 import { zhCN } from "date-fns/locale";
+import sanitizeHtml from "sanitize-html";
 
 interface ArticleItemProps {
   entry: Entry;
@@ -33,7 +34,9 @@ export function ArticleItem({ entry, selected, feedTitle, onClick }: ArticleItem
             {entry.title}
           </h3>
           {entry.summary && (
-            <p className="text-xs text-muted/80 mt-1 line-clamp-2 leading-relaxed">{entry.summary}</p>
+            <p className="text-xs text-muted/80 mt-1 line-clamp-2 leading-relaxed">
+              {sanitizeHtml(entry.summary, { allowedTags: [], allowedAttributes: {} }).trim()}
+            </p>
           )}
           <div className="flex items-center gap-1.5 mt-1.5 text-xs text-muted">
             {feedTitle && <span className="truncate max-w-[120px]">{feedTitle}</span>}
