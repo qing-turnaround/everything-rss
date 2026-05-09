@@ -13,9 +13,10 @@ interface ThreeColumnProps {
 }
 
 export function ThreeColumnLayout({ feedId, viewType, tag, title }: ThreeColumnProps) {
-  const { sidebarWidth, entryListWidth, setSidebarWidth, setEntryListWidth, activeView } = useAppStore();
+  const { sidebarWidth, entryListWidth, setSidebarWidth, setEntryListWidth, activeView, selectedFeedId } = useAppStore();
+  const effectiveFeedId = feedId ?? selectedFeedId;
   const effectiveViewType = viewType || activeView;
-  const { entries } = useEntries({ feedId, viewType: tag ? undefined : effectiveViewType, tag });
+  const { entries } = useEntries({ feedId: effectiveFeedId, viewType: tag ? undefined : effectiveViewType, tag });
 
   return (
     <div className="h-full flex">
@@ -29,7 +30,7 @@ export function ThreeColumnLayout({ feedId, viewType, tag, title }: ThreeColumnP
         maxWidth={600}
         onResize={setEntryListWidth}
       >
-        <EntryList feedId={feedId} viewType={tag ? undefined : effectiveViewType} tag={tag} title={title} />
+        <EntryList feedId={effectiveFeedId} viewType={tag ? undefined : effectiveViewType} tag={tag} title={title} />
       </ResizablePanel>
 
       <div className="flex-1 min-w-0">

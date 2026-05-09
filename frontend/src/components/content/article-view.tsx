@@ -18,8 +18,9 @@ export function ArticleView({ entry, feedTitle, onStar, onReadLater, isStarred, 
     ? format(new Date(entry.publishedAt * 1000), "yyyy-MM-dd HH:mm", { locale: zhCN })
     : "";
 
-  const cleanHtml = entry.content
-    ? sanitizeHtml(entry.content, {
+  const rawHtml = entry.content || entry.summary || "";
+  const cleanHtml = rawHtml
+    ? sanitizeHtml(rawHtml, {
         allowedTags: sanitizeHtml.defaults.allowedTags.concat(["img", "video", "source", "iframe", "figure", "figcaption", "pre", "code"]),
         allowedAttributes: {
           ...sanitizeHtml.defaults.allowedAttributes,
