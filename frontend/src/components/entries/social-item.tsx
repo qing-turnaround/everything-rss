@@ -10,17 +10,18 @@ interface SocialItemProps {
   onClick: () => void;
 }
 
+const imgRe = /<img[^>]+src=["']([^"']+)["'][^>]*>/i;
+
 export function SocialItem({ entry, selected, feedTitle, onClick }: SocialItemProps) {
   const timeAgo = entry.publishedAt
     ? formatDistanceToNow(new Date(entry.publishedAt * 1000), { addSuffix: true, locale: zhCN })
     : "";
 
-  const cleanContent = entry.content
-    ? sanitizeHtml(entry.content, {
-        allowedTags: [],
-        allowedAttributes: {},
-      }).slice(0, 500)
-    : entry.summary || "";
+  const rawHtml = entry.content || entry.summary || "";
+  const textOnly = sanitizeHtml(rawHtml, { allowedTags: [], allowedAttributes: {} }).trim().slice(0, 500);
+
+  const imgMatch = rawHtml.match(imgRe);
+  const imgSrc = imgMatch?.[1] || entry.thumbnail || null;
 
   const displayName = feedTitle || entry.author || "Unknown";
 
@@ -41,10 +42,10 @@ export function SocialItem({ entry, selected, feedTitle, onClick }: SocialItemPr
           <span className="w-2 h-2 rounded-full bg-accent flex-shrink-0" aria-label="未读" />
         )}
       </div>
-      <p className="text-sm leading-relaxed text-foreground/90">{cleanContent}</p>
-      {entry.thumbnail && (
+      <p className="text-sm leading-relaxed text-foreground/90">{textOnly}</p>
+      {imgSrc && (
         <img
-          src={entry.thumbnail}
+          src={imgSrc}
           alt=""
           loading="lazy"
           className="mt-3 rounded-lg max-h-48 object-cover w-full"

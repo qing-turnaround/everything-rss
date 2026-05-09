@@ -47,6 +47,15 @@ export function ArticleView({ entry, feedTitle, onStar, onReadLater, isStarred, 
         {publishDate && <time>{publishDate}</time>}
       </div>
 
+      {entry.thumbnail && !cleanHtml.includes("<img") && (
+        <img
+          src={entry.thumbnail}
+          alt=""
+          loading="lazy"
+          className="w-full rounded-lg mb-6 max-h-[400px] object-cover"
+        />
+      )}
+
       <article
         className="prose prose-sm max-w-none dark:prose-invert prose-img:rounded-lg prose-a:text-accent"
         dangerouslySetInnerHTML={{ __html: cleanHtml }}

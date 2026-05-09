@@ -3,12 +3,15 @@ package fetcher
 import (
 	"fmt"
 	"net/http"
+	"regexp"
 	"time"
 
 	"github.com/google/uuid"
 	"github.com/mmcdole/gofeed"
 	"github.com/qing-turnaround/everything-rss/backend/internal/model"
 )
+
+var imgSrcRe = regexp.MustCompile(`<img[^>]+src=["']([^"']+)["']`)
 
 const browserUA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
 
@@ -116,6 +119,15 @@ func extractMedia(item *gofeed.Item) (thumbnail, mediaURL string) {
 
 	if item.Image != nil && thumbnail == "" {
 		thumbnail = item.Image.URL
+	}
+
+	if thumbnail == "" {
+		for _, html := range []string{item.Content, item.Description} {
+			if m := imgSrcRe.FindStringSubmatch(html); len(m) > 1 {
+				thumbnail = m[1]
+				break
+			}
+		}
 	}
 
 	return
